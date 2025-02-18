@@ -8,6 +8,7 @@ import { shadesOfPurple } from "@clerk/themes";
 import { Toaster } from "sonner";
 
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -17,6 +18,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <ClerkProvider
       appearance={{

@@ -1,37 +1,47 @@
-"use client"
+"use client";
 
-
-import { usePathname, useRouter } from "next/navigation"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useOrganization, useUser } from "@clerk/nextjs";
-import useFetch from "@/hooks/use-fetch";
-import { deleteIssue, updateIssue } from "@/actions/issues";
-import { BarLoader } from "react-spinners";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import MDEditor from "@uiw/react-md-editor";
 import UserAvatar from "./user-avatar";
+import useFetch from "@/hooks/use-fetch";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { BarLoader } from "react-spinners";
+import { ExternalLink } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+
 import statuses from "@/data/status";
+import { deleteIssue, updateIssue } from "@/actions/issues";
 
 const priorityOptions = ["LOW", "MEDIUM", "HIGH", "URGENT"];
-const IssueDetailsDialog = ({
+
+export default function IssueDetailsDialog({
     isOpen,
     onClose,
     issue,
     onDelete = () => { },
     onUpdate = () => { },
-    borderCol = " ",
-}) => {
+    borderCol = "",
+}) {
     const [status, setStatus] = useState(issue.status);
     const [priority, setPriority] = useState(issue.priority);
-
     const { user } = useUser();
     const { membership } = useOrganization();
-
-    const pathname = usePathname();
     const router = useRouter();
+    const pathname = usePathname();
 
     const {
         loading: deleteLoading,
@@ -73,8 +83,6 @@ const IssueDetailsDialog = ({
         }
     }, [deleted, updated, deleteLoading, updateLoading]);
 
-
-
     const canChange =
         user.id === issue.reporter.clerkUserId || membership.role === "org:admin";
 
@@ -83,27 +91,28 @@ const IssueDetailsDialog = ({
     };
 
     const isProjectPage = !pathname.startsWith("/project/");
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
-                    <div className="flex justify-between items-center ">
+                    <div className="flex justify-between items-center">
                         <DialogTitle className="text-3xl">{issue.title}</DialogTitle>
+                        {isProjectPage && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleGoToProject}
+                                title="Go to Project"
+                            >
+                                <ExternalLink className="h-4 w-4" />
+                            </Button>
+                        )}
                     </div>
-                    {isProjectPage &&
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleGoToProject}
-                            title="Go To Project"
-                        >
-                            <ExternalLink className="h-4 w-4" />
-                        </Button>
-                    }
                 </DialogHeader>
-                {(deleteLoading || updateLoading) &&
+                {(updateLoading || deleteLoading) && (
                     <BarLoader width={"100%"} color="#36d7b7" />
-                }
+                )}
                 <div className="space-y-4">
                     <div className="flex items-center space-x-2">
                         <Select value={status} onValueChange={handleStatusChange}>
@@ -167,11 +176,7 @@ const IssueDetailsDialog = ({
                         </p>
                     )}
                 </div>
-
             </DialogContent>
-
         </Dialog>
-    )
+    );
 }
-
-export default IssueDetailsDialog

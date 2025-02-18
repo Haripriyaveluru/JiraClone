@@ -1,7 +1,8 @@
 "use client";
 
 import { useOrganization, useUser } from "@clerk/nextjs";
-import { BarLoader } from "react-spinners"
+import { BarLoader } from "react-spinners";
+import React from "react";
 
 
 const UserLoading = () => {

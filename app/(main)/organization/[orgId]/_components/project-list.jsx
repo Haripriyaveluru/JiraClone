@@ -1,7 +1,6 @@
 import { getProjects } from "@/actions/projects";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { CardTitle } from "react-bootstrap";
 import DeleteProject from "./delete-project";
 
 export default async function ProjectList({ orgId }) {
